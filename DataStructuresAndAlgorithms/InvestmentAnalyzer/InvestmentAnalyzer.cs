@@ -1,4 +1,5 @@
-﻿using System;
+﻿using C5;
+using System;
 using System.Collections.Generic;
 
 namespace DataStructuresAndAlgorithms
@@ -13,7 +14,7 @@ namespace DataStructuresAndAlgorithms
     public class InvestmentAnalyzer
     {
         private IStockTrader stockTrader;
-        List<InvestmentQuery> queries = new List<InvestmentQuery>();
+        IntervalHeap<InvestmentQuery> queries = new IntervalHeap<InvestmentQuery>();
         private List<RatingCacheElement> stock2rating = new List<RatingCacheElement>();
         Random random = new Random(29);
 
@@ -32,7 +33,7 @@ namespace DataStructuresAndAlgorithms
             while (queries.Count > 0)
             {
                 int rating;
-                var query = GetFirstPriority(queries);
+                var query = queries.DeleteMin();
 
                 var cacheElement = stock2rating.Find(x => x.StockID == query.StockID);
                 if (cacheElement != null)
@@ -47,18 +48,6 @@ namespace DataStructuresAndAlgorithms
                 if (rating > 80)
                     stockTrader.EnqueueStockForTrading(query);
             }
-        }
-
-        private InvestmentQuery GetFirstPriority(List<InvestmentQuery> queries)
-        {
-            InvestmentQuery minQuery = null;
-            foreach (var query in queries)
-            {
-                if (minQuery == null || query.CompareTo(minQuery) == 0)
-                    minQuery = query;
-            }
-            queries.Remove(minQuery);
-            return minQuery;
         }
 
         private int CalculateRating(string stockID)

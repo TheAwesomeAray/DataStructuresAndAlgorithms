@@ -5,11 +5,11 @@ namespace DataStructuresAndAlgorithms
 {
     internal class StockTrader : IStockTrader
     {
-        List<InvestmentQuery> stocksToTrade = new List<InvestmentQuery>();
+        LinkedList<InvestmentQuery> stocksToTrade = new LinkedList<InvestmentQuery>();
 
         public void EnqueueStockForTrading(InvestmentQuery query)
         {
-            stocksToTrade.Add(query);
+            stocksToTrade.AddLast(query);
         }
 
         internal void HandleTradings()
@@ -17,8 +17,8 @@ namespace DataStructuresAndAlgorithms
             Console.Write($"[{stocksToTrade.Count} stocks]");
             while (stocksToTrade.Count > 0)
             {
-                var query = stocksToTrade[0];
-                stocksToTrade.RemoveAt(0);
+                var query = stocksToTrade.First;
+                stocksToTrade.RemoveFirst();
 
                 //Thread.Sleep(100);
             }
