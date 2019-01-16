@@ -4,18 +4,11 @@ using System.Collections.Generic;
 
 namespace DataStructuresAndAlgorithms
 {
-    class RatingCacheElement
-    {
-        public string StockID { get; set; }
-        public int Rating { get; set; }
-    }
-
-
     public class InvestmentAnalyzer
     {
         private IStockTrader stockTrader;
         IntervalHeap<InvestmentQuery> queries = new IntervalHeap<InvestmentQuery>();
-        private List<RatingCacheElement> stock2rating = new List<RatingCacheElement>();
+        private Dictionary<string, int> stock2rating = new Dictionary<string, int>();
         Random random = new Random(29);
 
         public InvestmentAnalyzer(IStockTrader stockTrader)
@@ -35,15 +28,12 @@ namespace DataStructuresAndAlgorithms
                 int rating;
                 var query = queries.DeleteMin();
 
-                var cacheElement = stock2rating.Find(x => x.StockID == query.StockID);
-                if (cacheElement != null)
-                    rating = cacheElement.Rating;
+                if (stock2rating.ContainsKey(query.StockID))
+                    rating = stock2rating[query.StockID];
                 else
                 {
                     rating = CalculateRating(query.StockID);
-                    stock2rating.Add(
-                        new RatingCacheElement() { StockID = query.StockID, Rating = rating }
-                    );
+                    stock2rating.Add(query.StockID, rating);
                 }
                 if (rating > 80)
                     stockTrader.EnqueueStockForTrading(query);
